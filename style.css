@@ -1,0 +1,60 @@
+body {
+  width: 90%;
+  height: 90%;
+  margin: 5%;
+  padding: 0;
+  font-family: sans-serif; }
+
+#note {
+  width: 50px;
+  height: 50px;
+  font-size: 30px;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 50px;
+  margin: 10px auto; }
+
+#scale {
+  width: 100%; }
+  #scale #ticks {
+    width: 100%;
+    height: 50px;
+    position: relative; }
+    #scale #ticks .tick_major {
+      width: 3px;
+      height: 100%;
+      position: absolute;
+      transform: translate(-50%, 0);
+      background-color: rgba(0, 0, 0, 0.5);
+      top: 0;
+      z-index: 2; }
+    #scale #ticks .tick_medium {
+      width: 2px;
+      height: 60%;
+      position: absolute;
+      transform: translate(-50%, 0);
+      background-color: rgba(0, 0, 0, 0.5);
+      top: 20%;
+      z-index: 1; }
+    #scale #ticks .tick_minor {
+      width: 1px;
+      height: 40%;
+      position: absolute;
+      transform: translate(-50%, 0);
+      background-color: rgba(0, 0, 0, 0.5);
+      top: 30%;
+      z-index: 0; }
+    #scale #ticks .tick_zero {
+      z-index: 3; }
+  #scale #annotation {
+    font-size: 16px;
+    width: 100%;
+    height: 25px;
+    position: relative; }
+    #scale #annotation .entry {
+      width: 25px;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      transform: translate(-50%, 0);
+      text-align: center; }
