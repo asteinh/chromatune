@@ -1,49 +1,86 @@
 /* global $:false */
+let inputDevices = null
+let activeDevice = null
+let audioCtx = null
+let pitch = null
 
-// fetch all devices
-var inputDevices = getInputDevices()
-var activeDevice = null
-
-function getInputDevices () {
-  navigator.mediaDevices.enumerateDevices().then((devices) => {
-    console.log(devices)
-  }).catch(() => {
-    console.log('error')
-  })
-}
-
-var audioContext = new window.AudioContext()
-
-// Create an empty three-second stereo buffer at the sample rate of the AudioContext
-var buffer = audioContext.createBuffer(1, audioContext.sampleRate * 0.25, audioContext.sampleRate)
-
-// generate all indicators for the scale
-const ticks = []
-for (var i = -50; i <= +50; i++) { ticks.push(i) }
-const maxTick = Math.max(...ticks.map(a => Math.abs(a)))
+navigator.mediaDevices.enumerateDevices().then((devices) => {
+  inputDevices = devices.filter((d) => { return d.kind === 'audioinput' })
+  console.log(devices)
+})
 
 $(document).ready(() => {
   $(inputDevices).each((index, device) => {
-    if (device.id === activeDevice) {
-      $('#input-device').append('<option value="' + device.id + '" selected>' + device.name + '</option>')
-    } else {
-      $('#input-device').append('<option value="' + device.id + '">' + device.name + '</option>')
-    }
+    $('#input-device').append('<option value="' + device.deviceId + '">' + device.label + '</option>')
   })
+  for (var i = -50; i <= 50; i++) {
+    $('#ticks').append('<span id="tick_' + i + '" class="tick"></span>')
+  }
 
-  const scaleWidth = $('#scale').width()
-  let left = 0
-  $(ticks).each((index, tick) => {
-    left = (1 + tick / maxTick) * scaleWidth / 2
-    if (tick === 0) {
-      $('#ticks').append('<span id="tick_' + tick + '" class="tick_zero tick_major" style="left: ' + left + 'px"></span>')
-    } else if (tick % 25 === 0) {
-      $('#ticks').append('<span id="tick_' + tick + '" class="tick_major" style="left: ' + left + 'px"></span>')
-      $('#annotation').append('<span class="entry" style="left: ' + left + 'px">' + tick + '</span>')
-    } else if (tick % 10 === 0) {
-      $('#ticks').append('<span id="tick_' + tick + '" class="tick_medium" style="left: ' + left + 'px"></span>')
-    } else {
-      $('#ticks').append('<span id="tick_' + tick + '" class="tick_minor" style="left: ' + left + 'px"></span>')
+  // fixed interval for pitch detection
+  setInterval(() => {
+    if (pitch) {
+      pitch.getPitch((err, frequency) => {
+        if (err) console.log(err)
+        if (frequency) {
+          $('#frequency').text(frequency.toFixed(2))
+          const f0 = findReferenceFrequency(frequency)
+          const cents = 1200 * Math.log2(frequency / f0)
+          $('#cents').text(cents.toFixed(2))
+          setTicksTo(cents)
+        }
+      })
     }
+  }, 100)
+})
+
+function setTicksTo (cents) {
+  $('.tick').each((i, e) => {
+    $(e).css('opacity', '0.25')
   })
+  const cents_ = Math.round(cents)
+  if (cents_ > 0) {
+    for (var i = 0; i <= cents_; i++) {
+      $('#tick_' + i).css('opacity', '1')
+    }
+  } else if (cents_ < 0) {
+    for (var i = cents_; i <= 0; i++) {
+      $('#tick_' + i).css('opacity', '1')
+    }
+  } else {
+    $('#tick_0').css('opacity', '1')
+  }
+}
+
+// callback of input device selector
+function selectInputDevice (value) {
+  // create audio context on first user interaction
+  if (!audioCtx) audioCtx = new window.AudioContext()
+
+  activeDevice = inputDevices.filter((d) => { return d.deviceId === value })[0]
+
+  console.log('Selected input device: ' + activeDevice.label)
+
+  navigator.mediaDevices.getUserMedia({
+    audio: { deviceId: { exact: activeDevice.deviceId } }
+  }).then((stream) => {
+    pitch = ml5.pitchDetection('./crepe_model/', audioCtx, stream, null)
+  })
+}
+
+// find frequency (from standard tuning) closest to identified pitch
+function findReferenceFrequency (frequency) {
+  const tuning = [329.63, 246.94, 196.00, 146.83, 110.00, 82.41]
+  tuning.sort((a, b) => {
+    return Math.abs(frequency - a) - Math.abs(frequency - b)
+  })
+  return tuning[0]
+}
+
+// pause capture when tab is not active
+document.addEventListener('visibilitychange', () => {
+  if (audioCtx) {
+    if (document.hidden) audioCtx.suspend()
+    else audioCtx.resume()
+  }
 })

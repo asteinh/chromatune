@@ -5,55 +5,18 @@
     <link rel="stylesheet" href="./style.css">
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://unpkg.com/ml5@0.4.3/dist/ml5.min.js"></script>
-    <!-- <script src="interface.js"></script> -->
-
-    <script>
-      var inputDevices = null
-      var activeDevice = null
-      const audioCtx = new window.AudioContext()
-      var pitch = null
-
-      navigator.mediaDevices.enumerateDevices().then((devices) => {
-        inputDevices = devices.filter((d) => { return d.kind === "audioinput" })
-        console.log(inputDevices)
-        activeDevice = devices.filter((d) => { return d.deviceId === "default" })
-      })
-
-      $(document).ready(() => {
-        $(inputDevices).each((index, device) => {
-          if (device.deviceId === activeDevice) {
-            $('#input-device').append('<option value="' + device.deviceId + '" selected>' + device.label + '</option>')
-          } else {
-            $('#input-device').append('<option value="' + device.deviceId + '">' + device.label + '</option>')
-          }
-        })
-
-        let timerId = setInterval(function() {
-          if (pitch) {
-            pitch.getPitch(function(err, frequency) {
-              console.log(frequency);
-            })
-          }
-        }, 100)
-      })
-
-      function selectInputDevice(value) {
-        activeDevice = inputDevices.filter((d) => { return d.deviceId === value })
-
-        navigator.mediaDevices.getUserMedia({ audio: { deviceId: { exact: activeDevice.deviceId } } }).then((stream) => {
-          console.log(stream)
-          pitch = ml5.pitchDetection('./model/', audioCtx, stream, function() {})
-        })
-      }
-    </script>
-
+    <script src="interface.js"></script>
   </head>
 
   <body>
     <div class="select">
       <label for="input-device">Audio input: </label>
-      <select id="input-device" onchange="selectInputDevice(value);"></select>
+      <select id="input-device" onchange="selectInputDevice(value);">
+        <option value="" disabled selected>Select device</option>
+      </select>
     </div>
+    <div id="frequency"></div>
+    <div id="cents"></div>
     <div id="note"></div>
     <div id="scale">
       <div id="ticks"></div>
