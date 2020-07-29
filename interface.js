@@ -4,15 +4,18 @@ let activeDevice = null
 let audioCtx = null
 let pitch = null
 
-navigator.mediaDevices.enumerateDevices().then((devices) => {
-  inputDevices = devices.filter((d) => { return d.kind === 'audioinput' })
-  console.log(devices)
-})
+navigator.mediaDevices.getUserMedia({ audio: true, video: false })
 
 $(document).ready(() => {
-  $(inputDevices).each((index, device) => {
-    $('#input-device').append('<option value="' + device.deviceId + '">' + device.label + '</option>')
+  navigator.mediaDevices.enumerateDevices().then((devices) => {
+    inputDevices = devices.filter((d) => { return d.kind === 'audioinput' })
+    console.log(devices)
+  }).then(() => {
+    $(inputDevices).each((index, device) => {
+      $('#input-device').append('<option value="' + device.deviceId + '">' + device.label + '</option>')
+    })
   })
+
   for (var i = -50; i <= 50; i++) {
     $('#ticks').append('<span id="tick_' + i + '" class="tick"></span>')
   }
