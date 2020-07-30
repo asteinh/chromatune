@@ -11,7 +11,7 @@ module.exports = {
     publicPath: '/'
   },
   plugins: [
-    new CleanWebpackPlugin(),
+    // new CleanWebpackPlugin(),
     new CopyWebpackPlugin({
       patterns: [
         { from: paths.static, to: 'assets' }
