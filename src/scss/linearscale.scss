@@ -1,0 +1,14 @@
+#linearscale {
+  .tick {
+    display: inline-block;
+    width: 1px;
+    height: 25px;
+    margin: 1px;
+    opacity: 0.25;
+    background-color: #000;
+  }
+
+  #tick_0 {
+    width: 4px;
+  }
+}

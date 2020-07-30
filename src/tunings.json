@@ -1,0 +1,26 @@
+{
+  "Standard" : [
+    { "pitch": "E2", "frequency": 82.4069 },
+    { "pitch": "A2", "frequency": 110.0000 },
+    { "pitch": "D3", "frequency": 146.8324 },
+    { "pitch": "G3", "frequency": 195.9977 },
+    { "pitch": "B3", "frequency": 246.9417 },
+    { "pitch": "E4", "frequency": 329.6276 }
+  ],
+  "Drop D" : [
+    { "pitch": "D2", "frequency": 73.4162 },
+    { "pitch": "A2", "frequency": 110.0000 },
+    { "pitch": "D3", "frequency": 146.8324 },
+    { "pitch": "G3", "frequency": 195.9977 },
+    { "pitch": "B3", "frequency": 246.9417 },
+    { "pitch": "E4", "frequency": 329.6276 }
+  ],
+  "Open D" : [
+    { "pitch": "D2", "frequency": 73.4162 },
+    { "pitch": "A2", "frequency": 110.0000 },
+    { "pitch": "D3", "frequency": 146.8324 },
+    { "pitch": "F#3", "frequency": 184.9972 },
+    { "pitch": "A3", "frequency": 220.0000 },
+    { "pitch": "D4", "frequency": 293.6648 }
+  ]
+}
