@@ -1,0 +1,9 @@
+#stringindicator {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1em;
+
+  .string {
+    flex: 0 1 auto;
+  }
+}

@@ -20,7 +20,7 @@ export default class PitchDetector {
 
   // set tuning according to string argument
   setTuning (tuning) {
-
+    this.activeTuning = tuning
   }
 
   // find reference string (from currently set tuning) closest to identified pitch
