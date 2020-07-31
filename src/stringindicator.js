@@ -3,36 +3,23 @@ import tunings from './tunings.json'
 
 export default class StringIndicator {
   constructor (container) {
-    this.activeTuning = 'Standard'
     container.append('<div id="stringindicator"></div>')
     for (let i = 0; i < 6; i++) {
       $('#stringindicator').append('<span id="string_' + i + '" class="string uk-padding-small uk-tile-muted"></span>')
     }
-    this.setTuning('Standard')
   }
 
-  // set tuning according to string argument
-  setTuning (tuning) {
-    this.activeTuning = tuning
-    let tuning_ = tunings[tuning]
-    tuning_.sort((a, b) => {
-      return a.frequency - b.frequency
-    })
-    for (let i = 0; i < 6; i++) {
-      $('#string_' + i).text(tuning_[i].name)
+  // set the string names and an active string
+  set (tuning, active) {
+    tuning.sort((a, b) => (a.frequency - b.frequency))
+    for (let i = 0; i < tuning.length; i++) {
+      $('#stringindicator>#string_' + i)
+        .text(tuning[i].name)
+        .removeClass('uk-tile-primary')
+        .addClass('uk-tile-muted')
     }
-  }
-
-  // set the active string by its name
-  setActive (name_) {
-    $('#stringindicator>.string').each((i, e) => {
-      $(e).removeClass('uk-tile-primary').addClass('uk-tile-muted')
-    })
-    let tuning = tunings[this.activeTuning]
-    tuning.sort((a, b) => {
-      return a.frequency - b.frequency
-    })
-    let i = tuning.findIndex((e) => e.name == name_)
-    $('#stringindicator>#string_' + i).removeClass('uk-tile-muted').addClass('uk-tile-primary')
+    if (active) {
+      $('#stringindicator>#string_' + active).removeClass('uk-tile-muted').addClass('uk-tile-primary')
+    }
   }
 }

@@ -20,11 +20,20 @@ let linearScale = new LinearScale($('#visual'))
 
 navigator.mediaDevices.getUserMedia({ audio: true, video: false })
 
+function getActiveTuning () {
+  let tuning = tunings[pitchDetector.getTuning()]
+  tuning.sort((a, b) => (a.frequency - b.frequency))
+  return tuning
+}
+
 function pitchDetectorCallback (frequency, cents, ref) {
   linearScale.set(cents)
   // gaugeScale.set(cents)
 
-  stringIndicator.setActive(ref.name)
+  let tuning = getActiveTuning()
+  let i = tuning.findIndex((e) => e.name == ref.name)
+  stringIndicator.set(tuning, i)
+
   $('#frequency').text(frequency.toFixed(2))
   $('#cents').text(cents.toFixed(2))
   $('#note').text(ref.name)
@@ -48,6 +57,7 @@ $('#select-device').change(function () {
     }
     pitchDetector = new PitchDetector(audioCtx, stream, 100, pitchDetectorCallback)
     pitchDetector.setTuning('Standard')
+    stringIndicator.set(getActiveTuning(), null)
     $('#select-mode').prop('disabled', false)
     $('#select-mode').change()
   })
@@ -73,7 +83,7 @@ $('#select-tuning').change(function () {
     console.log('Requested tuning not found.')
   } else {
     pitchDetector.setTuning(tuning)
-    stringIndicator.setTuning(tuning)
+    stringIndicator.set(getActiveTuning(), null)
   }
 })
 

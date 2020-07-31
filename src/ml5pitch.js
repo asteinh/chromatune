@@ -23,6 +23,10 @@ export default class PitchDetector {
     this.activeTuning = tuning
   }
 
+  getTuning () {
+    return this.activeTuning
+  }
+
   // find reference string (from currently set tuning) closest to identified pitch
   findReference (frequency) {
     const tuning = tunings[this.activeTuning]
