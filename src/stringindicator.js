@@ -24,12 +24,15 @@ export default class StringIndicator {
   }
 
   // set the active string by its name
-  setActive (name) {
+  setActive (name_) {
     $('#stringindicator>.string').each((i, e) => {
       $(e).removeClass('uk-tile-primary').addClass('uk-tile-muted')
     })
     let tuning = tunings[this.activeTuning]
-    let i = tuning.findIndex((e) => e.name === name)
+    tuning.sort((a, b) => {
+      return a.frequency - b.frequency
+    })
+    let i = tuning.findIndex((e) => e.name == name_)
     $('#stringindicator>#string_' + i).removeClass('uk-tile-muted').addClass('uk-tile-primary')
   }
 }
